@@ -5,7 +5,7 @@
   <title>주문 내역 조회</title>
   <style>
     body { font-family: sans-serif; padding: 20px; }
-    table { border-collapse: collapse; width: 100%; margin-top: 20px; display: none; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; display:none; }
     th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
     th { background-color: #f2f2f2; }
     #totalSum { font-weight: bold; font-size: 1.2em; }
@@ -38,7 +38,7 @@
 
 <div id="loading">계산 중입니다... 잠시만 기다려주세요.</div>
 
-<h2 style="display:none;">마지막 주문 내역</h2>
+<h2>마지막 주문 내역</h2>
 <table>
   <thead>
     <tr>
@@ -50,37 +50,36 @@
   </thead>
   <tbody id="orderTable"></tbody>
 </table>
-<h3 style="display:none;">총합: <span id="totalSum">0</span> 원</h3>
+<h3>총합: <span id="totalSum">0</span> 원</h3>
 
 <div id="accountSection">
   <div id="accountInfo" style="font-weight:bold;">
-    계좌번호: 우리은행 1002-123-456789 (홍길동)
+    계좌번호: 3333140123758 카카오뱅크 (한지호)
   </div>
   <button id="copyButton">계좌번호 복사하기</button>
 </div>
 
 <script>
 // 첫 방문 여부 확인
-if (!sessionStorage.getItem("reloadedOnce")) {
-  // 로딩은 그대로 두고, 다른 요소 숨기기
+const firstVisit = !sessionStorage.getItem("reloadedOnce");
+
+if (firstVisit) {
   document.querySelector("h2").style.display = "none";
   document.querySelector("table").style.display = "none";
   document.querySelector("h3").style.display = "none";
   document.getElementById("accountSection").style.display = "none";
 
-  // 5초 후 새로고침
   setTimeout(() => {
     sessionStorage.setItem("reloadedOnce", "true");
     location.reload();
   }, 5000);
 } else {
-  // 로딩 숨기기
   document.getElementById("loading").style.display = "none";
   document.querySelector("h2").style.display = "block";
   document.querySelector("table").style.display = "table";
   document.querySelector("h3").style.display = "block";
+  document.getElementById("accountSection").style.display = "block";
 
-  // 단가 테이블
   const unitPrices = {
     "1/4 버": 1800,
     "701버": 1800,
@@ -157,7 +156,43 @@ if (!sessionStorage.getItem("reloadedOnce")) {
     "하악인상트레이(XL)": 5500,
     "하악인상트레이(L)": 5000,
     "하악인상트레이(M)": 5000,
-    "하악인상트레이(S)": 5000
+    "하악인상트레이(S)": 5000,
+    "enhancer": 1800,
+    "EX20": 1900,
+    "EX21": 1500,
+    "EZTEMPO 리퀴드": 22000,
+    "EZTEMPO 파우더": 34000,
+    "FG169L": 1800,
+    "FG2": 1800,
+    "FG245": 1800,
+    "FG271": 1800,
+    "FG3": 1800,
+    "FG330": 1600,
+    "FO25": 1500,
+    "K 파일": 4500,
+    "PKT세트": 25000,
+    "RA4 버": 2000,
+    "TC21": 1900,
+    "TC21F": 1900,
+    "TR11": 1900,
+    "TR12": 1900,
+    "TR13": 1900,
+    "TR13EF": 1900,
+    "TR13F": 1900,
+    "TR14": 1900,
+    "TR62C": 1900,
+    "TRS14EF": 1900,
+    "Sof-lex 디스크 - 빨강": 400,
+    "Sof-lex 디스크 - 다홍": 400,
+    "Sof-lex 디스크 - 주황": 400,
+    "Sof-lex 디스크 - 노랑": 400,
+    "WR13": 1900,
+    "베이스플레이트 왁스": 5000,
+    "스티키 왁스": 35000,
+    "박싱 왁스": 13000,
+    "레진분리제": 14500,
+    "핸드피스커플링": 26500,
+    "블랙실크 3-0(유침)_12s": 12000
   };
 
   const sheetUrl = "https://api.sheetbest.com/sheets/31516180-f935-4fbe-8d7e-1e611939e398?" + new Date().getTime();
@@ -197,9 +232,6 @@ if (!sessionStorage.getItem("reloadedOnce")) {
       });
 
       document.getElementById("totalSum").textContent = total.toLocaleString();
-      document.getElementById("accountSection").style.display = "block";
-      // 새로고침 플래그 지움 (다음 로드시 다시 대기)
-      sessionStorage.removeItem("reloadedOnce");
     })
     .catch(err => {
       console.error(err);
@@ -212,6 +244,9 @@ if (!sessionStorage.getItem("reloadedOnce")) {
       .then(() => alert("계좌번호가 복사되었습니다!"))
       .catch(err => alert("복사 실패: " + err));
   });
+
+  // 플래그 제거
+  sessionStorage.removeItem("reloadedOnce");
 }
 </script>
 
