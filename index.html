@@ -143,15 +143,16 @@ const unitPrices = {
   "블랙실크 3-0(유침)_12s": 12000
 };
 
-const sheetUrl = "https://api.sheetbest.com/sheets/31516180-f935-4fbe-8d7e-1e611939e398";
+const sheetUrl = "https://api.sheetbest.com/sheets/31516180-f935-4fbe-8d7e-1e611939e398?" + new Date().getTime();
 
-fetch(sheetUrl)
+fetch(sheetUrl, { cache: "no-store" })
   .then(res => res.json())
   .then(data => {
     if (data.length === 0) {
       alert("주문 내역이 없습니다.");
       return;
     }
+
     const last = data[data.length - 1];
     let total = 0;
     const tbody = document.getElementById("orderTable");
@@ -160,7 +161,6 @@ fetch(sheetUrl)
       if (!unitPrices[key]) return;
       if (!value || value === "" || value === null) return;
 
-      // 숫자만 추출, 없으면 0 처리
       const qtyMatch = String(value).match(/\d+/);
       const qty = qtyMatch ? parseInt(qtyMatch[0]) : 0;
       if (qty === 0) return;
