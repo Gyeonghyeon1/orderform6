@@ -9,6 +9,10 @@
     th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
     th { background-color: #f2f2f2; }
     #totalSum { font-weight: bold; font-size: 1.2em; }
+    #accountSection {
+      margin-top: 20px;
+      display: none; /* 처음엔 숨김 */
+    }
     #copyButton {
       display: inline-block;
       margin-top: 10px;
@@ -41,11 +45,13 @@
 </table>
 <h3>총합: <span id="totalSum">0</span> 원</h3>
 
-<!-- 복사할 계좌번호 -->
-<div id="accountInfo" style="margin-top:20px; font-weight:bold;">
-  계좌번호: 3333140123758 카카오뱅크 (한지호)
+<!-- 계좌번호 영역 -->
+<div id="accountSection">
+  <div id="accountInfo" style="font-weight:bold;">
+    계좌번호:3333140123758 카카오뱅크 (한지호)
+  </div>
+  <button id="copyButton">계좌번호 복사하기</button>
 </div>
-<button id="copyButton">계좌번호 복사하기</button>
 
 <script>
 const unitPrices = {
@@ -200,6 +206,9 @@ fetch(sheetUrl, { cache: "no-store" })
     });
 
     document.getElementById("totalSum").textContent = total.toLocaleString();
+
+    // 테이블 로딩이 끝나면 계좌번호 영역 보여줌
+    document.getElementById("accountSection").style.display = "block";
   })
   .catch(err => {
     console.error(err);
