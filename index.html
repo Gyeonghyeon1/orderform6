@@ -27,7 +27,7 @@
 <h3>총합: <span id="totalSum">0</span> 원</h3>
 
 <script>
-// 단가 테이블 (필요한 품목만 추가)
+// 단가 테이블
 const unitPrices = {
   "1/4 버": 1800,
   "701버": 1800,
@@ -143,12 +143,15 @@ const unitPrices = {
   "블랙실크 3-0(유침)_12s": 12000
 };
 
-// sheet.best API
 const sheetUrl = "https://api.sheetbest.com/sheets/31516180-f935-4fbe-8d7e-1e611939e398";
 
 fetch(sheetUrl)
   .then(res => res.json())
   .then(data => {
+    if (data.length === 0) {
+      alert("주문 내역이 없습니다.");
+      return;
+    }
     const last = data[data.length - 1];
     let total = 0;
     const tbody = document.getElementById("orderTable");
@@ -157,8 +160,11 @@ fetch(sheetUrl)
       if (!unitPrices[key]) return;
       if (!value || value === "" || value === null) return;
 
-      // "1개", "2개"에서 숫자만 추출
-      const qty = parseInt(value.replace(/\D/g, ""));
+      // 숫자만 추출, 없으면 0 처리
+      const qtyMatch = String(value).match(/\d+/);
+      const qty = qtyMatch ? parseInt(qtyMatch[0]) : 0;
+      if (qty === 0) return;
+
       const price = unitPrices[key];
       const sum = qty * price;
       total += sum;
