@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>주문 조회</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background-color: #f2f2f2; }
+    #totalSum { font-weight: bold; font-size: 1.2em; }
+  </style>
+</head>
+<body>
+<h2>마지막 주문 내역</h2>
+<table>
+  <thead>
+    <tr>
+      <th>품목명</th>
+      <th>수량</th>
+      <th>단가</th>
+      <th>합계</th>
+    </tr>
+  </thead>
+  <tbody id="orderTable"></tbody>
+</table>
+<h3>총합: <span id="totalSum">0</span> 원</h3>
+
+<script>
+// 단가 정의
+const unitPrices = {
+  "1/4 버": 1800,
+  "러버볼 (대)": 2500,
+  "러버볼 (중)": 2000,
+  "레진볼 (대)": 4000,
+  "레진볼 (중)": 2500,
+  "레진볼 (소)": 1500,
+  "글러브 S": 5800
+};
+
+// sheet.best API URL
+const sheetUrl = "https://api.sheetbest.com/sheets/31516180-f935-4fbe-8d7e-1e611939e398"; // 여기 본인 API URL 넣으세요
+
+fetch(sheetUrl)
+  .then(response => response.json())
+  .then(data => {
+    // 최신 응답 가져오기
+    const last = data[data.length - 1];
+    let total = 0;
+    const tbody = document.getElementById("orderTable");
+
+    // 행의 각 품목 순회
+    Object.entries(last).forEach(([item, qtyText]) => {
+      if (!unitPrices[item]) return;
+      const qty = parseInt(qtyText);
+      if (!qty || qty <= 0) return;
+
+      const price = unitPrices[item];
+      const sum = price * qty;
+      total += sum;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${item}</td>
+        <td>${qty}</td>
+        <td>${price.toLocaleString()}</td>
+        <td>${sum.toLocaleString()}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById("totalSum").textContent = total.toLocaleString();
+  })
+  .catch(error => {
+    console.error(error);
+    alert("데이터를 불러오는데 실패했습니다.");
+  });
+</script>
+</body>
+</html>
