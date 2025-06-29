@@ -60,7 +60,6 @@
 </div>
 
 <script>
-// 첫 방문 여부 확인
 const firstVisit = !sessionStorage.getItem("reloadedOnce");
 
 if (firstVisit) {
@@ -200,6 +199,7 @@ if (firstVisit) {
   fetch(sheetUrl, { cache: "no-store" })
     .then(res => res.json())
     .then(data => {
+      console.log('불러온 데이터:', data);
       if (data.length === 0) {
         alert("주문 내역이 없습니다.");
         return;
@@ -245,7 +245,6 @@ if (firstVisit) {
       .catch(err => alert("복사 실패: " + err));
   });
 
-  // 플래그 제거
   sessionStorage.removeItem("reloadedOnce");
 }
 </script>
